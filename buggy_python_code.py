@@ -25,15 +25,25 @@ def print_nametag(format_string, person):
 
 
 def fetch_website(urllib_version, url):
-    # Import the requested version (2 or 3) of urllib
-    exec(f"import urllib{urllib_version} as urllib", globals())
-    # Fetch and print the requested URL
+    # Map allowed versions to their corresponding modules
+    urllib_modules = {
+        "2": "urllib2",
+        "3": "urllib3"
+    }
 
+    # Validate the urllib_version input
+    if urllib_version not in urllib_modules:
+        raise ValueError("Invalid urllib version. Allowed values are '2' or '3'.")
+
+    # Dynamically import the appropriate module
+    urllib = __import__(urllib_modules[urllib_version])
+
+    # Fetch and print the requested URL
     try:
         http = urllib.PoolManager()
         r = http.request('GET', url)
-    except:
-        print('Exception')
+    except Exception as e:
+        print(f'Exception: {e}')
 
 def load_yaml(filename):
     stream = open(filename)
